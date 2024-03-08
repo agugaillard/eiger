@@ -1,0 +1,19 @@
+services:
+  test:
+    image: golang
+    volumes:
+      - .:/eiger
+    working_dir: /eiger
+    command: go test ./...
+
+  sample:
+    image: golang
+    volumes:
+      - .:/eiger
+    working_dir: /eiger
+    command: bash -c "
+      go build && echo && echo &&
+      ./eiger signature resources/lorem_sample/lorem_impsum /tmp/signature 32 && echo && echo &&
+      ./eiger delta resources/lorem_sample/modified_lorem_impsum /tmp/signature /tmp/delta && echo && echo &&
+      ./eiger patch resources/lorem_sample/lorem_impsum /tmp/delta /tmp/output && echo && echo &&
+      diff resources/lorem_sample/modified_lorem_impsum /tmp/output"
